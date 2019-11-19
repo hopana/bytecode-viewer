@@ -1,6 +1,7 @@
 package the.bytecode.club.bytecodeviewer.util;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /***************************************************************************
  * Bytecode Viewer (BCV) - Java & Android Reverse Engineering Suite        *
@@ -38,12 +39,7 @@ public class NewlineOutputStream extends FilterOutputStream {
             String s = System.getProperty("line.separator");
             if (s == null || s.length() <= 0)
                 s = "\n";
-            try {
-                newline = s.getBytes("iso-8859-1");    // really us-ascii
-            } catch (UnsupportedEncodingException ex) {
-                // should never happen
-                newline = new byte[]{(byte) '\n'};
-            }
+            newline = s.getBytes(StandardCharsets.UTF_8);    // really us-ascii
         }
     }
 

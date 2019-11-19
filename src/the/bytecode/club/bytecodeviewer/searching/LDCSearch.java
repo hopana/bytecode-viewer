@@ -1,6 +1,6 @@
 package the.bytecode.club.bytecodeviewer.searching;
 
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.Iterator;
 import java.util.ListIterator;
 
@@ -57,7 +57,9 @@ public class LDCSearch implements SearchTypeDetails {
     public JPanel getPanel() {
         if (myPanel == null) {
             myPanel = new JPanel(new GridLayout(1, 2));
-            myPanel.add(new JLabel("Search String: "));
+            JLabel searchLabel = new JLabel("Search String: ");
+            searchLabel.setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
+            myPanel.add(searchLabel);
             myPanel.add(searchText);
         }
 

@@ -1,8 +1,10 @@
 package me.konloch.kontainer.io;
 
+import the.bytecode.club.bytecodeviewer.util.EncodeUtils;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -21,8 +23,7 @@ public class DiskReader {
     /**
      * Used to load from file, allows caching
      */
-    public synchronized static ArrayList<String> loadArrayList(String fileName,
-                                                               boolean cache) {
+    public synchronized static ArrayList<String> loadArrayList(String fileName, boolean cache) {
         ArrayList<String> array = new ArrayList<String>();
         if (!map.containsKey(fileName)) {
             try {
@@ -54,27 +55,24 @@ public class DiskReader {
     /**
      * Used to load from file
      */
-    public synchronized static String loadAsString(String fileName)
-            throws Exception {
-        String s = "";
+    public synchronized static String loadAsString(String fileName) throws Exception {
+        StringBuilder s = new StringBuilder();
 
-        BufferedReader reader = new BufferedReader(new FileReader(new File(
-                fileName)));
-        String add;
+        BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
 
-        while ((add = reader.readLine()) != null)
-            s += add + System.getProperty("line.separator");
+        for (String add = reader.readLine(); add != null; add = reader.readLine()) {
+            s.append(EncodeUtils.unicodeToString(add)).append(System.getProperty("line.separator"));
+        }
 
         reader.close();
 
-        return s;
+        return s.toString();
     }
 
     /**
      * Used to load a string via line number lineNumber = -1 means random.
      */
-    public static String loadString(String fileName, int lineNumber,
-                                    boolean cache) throws Exception {
+    public static String loadString(String fileName, int lineNumber, boolean cache) throws Exception {
 
         ArrayList<String> array;
         if (!map.containsKey(fileName)) {

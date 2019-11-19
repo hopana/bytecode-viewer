@@ -1,26 +1,16 @@
 package the.bytecode.club.bytecodeviewer.decompilers;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import me.konloch.kontainer.io.DiskReader;
+import org.objectweb.asm.tree.ClassNode;
+import the.bytecode.club.bytecodeviewer.BytecodeViewer;
+import the.bytecode.club.bytecodeviewer.util.MiscUtils;
+
+import java.io.*;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import me.konloch.kontainer.io.DiskReader;
-
-import org.objectweb.asm.tree.ClassNode;
-
-import the.bytecode.club.bytecodeviewer.BytecodeViewer;
-import the.bytecode.club.bytecodeviewer.util.MiscUtils;
 
 /***************************************************************************
  * Bytecode Viewer (BCV) - Java & Android Reverse Engineering Suite        *
@@ -48,38 +38,34 @@ import the.bytecode.club.bytecodeviewer.util.MiscUtils;
 
 public class CFRDecompiler extends Decompiler {
 
-    private static final String[] WINDOWS_IS_GREAT = new String[]
-            {
-                      "CON",
-                      "PRN",
-                      "AUX",
-                      "NUL",
-                      "COM1",
-                      "COM2",
-                      "COM3",
-                      "COM4",
-                      "COM5",
-                      "COM6",
-                      "COM7",
-                      "COM8",
-                      "COM9",
-                      "LPT1",
-                      "LPT2",
-                      "LPT3",
-                      "LPT4",
-                      "LPT5",
-                      "LPT6",
-                      "LPT7",
-                      "LPT8",
-                      "LPT9"
-            };
+    private static final String[] WINDOWS_IS_GREAT = new String[]{
+            "CON",
+            "PRN",
+            "AUX",
+            "NUL",
+            "COM1",
+            "COM2",
+            "COM3",
+            "COM4",
+            "COM5",
+            "COM6",
+            "COM7",
+            "COM8",
+            "COM9",
+            "LPT1",
+            "LPT2",
+            "LPT3",
+            "LPT4",
+            "LPT5",
+            "LPT6",
+            "LPT7",
+            "LPT8",
+            "LPT9"
+    };
 
-    public static String windowsFun(String base)
-    {
-        for(String s : WINDOWS_IS_GREAT)
-        {
-            if(base.contains(s.toLowerCase()))
-            {
+    public static String windowsFun(String base) {
+        for (String s : WINDOWS_IS_GREAT) {
+            if (base.contains(s.toLowerCase())) {
                 base = base.replace(s.toLowerCase(), "BCV");
             }
         }
@@ -105,7 +91,7 @@ public class CFRDecompiler extends Decompiler {
             new the.bytecode.club.bytecodeviewer.api.ExceptionUI(e);
         }
 
-        String fuckery = fuckery(fileStart);
+        String outputPath = getOutputPath(fileStart);
 
         /*if (!BytecodeViewer.fatJar) {
             try {
@@ -126,12 +112,9 @@ public class CFRDecompiler extends Decompiler {
             org.benf.cfr.reader.Main.main(generateMainMethod(tempClass.getAbsolutePath(), fuckery));
         }*/
 
-        try
-        {
-            org.benf.cfr.reader.Main.main(generateMainMethod(tempClass.getAbsolutePath(), fuckery));
-        }
-        catch(StackOverflowError | Exception e)
-        {
+        try {
+            org.benf.cfr.reader.Main.main(generateMainMethod(tempClass.getAbsolutePath(), outputPath));
+        } catch (StackOverflowError | Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             e.printStackTrace();
@@ -140,26 +123,24 @@ public class CFRDecompiler extends Decompiler {
         }
 
         tempClass.delete();
-        File file = new File(fuckery);
+        File file = new File(outputPath);
 
-        if(file.exists())
+        if (file.exists())
             return findFile(file.listFiles());
 
         return "CFR error! Send the stacktrace to Konloch at http://the.bytecode.club or konloch@gmail.com" + BytecodeViewer.nl + BytecodeViewer.nl + "Suggested Fix: Click refresh class, if it fails again try another decompiler." + BytecodeViewer.nl + BytecodeViewer.nl + exception;
     }
 
-    Random r = new Random();
-    File f;
+    private Random r = new Random();
+    private File f;
 
-    public String fuckery(String start) {
-        boolean b = false;
-        while (!b) {
+    public String getOutputPath(String start) {
+        while (true) {
             f = new File(start + r.nextInt(Integer.MAX_VALUE));
-            if (!f.exists())
+            if (!f.exists()) {
                 return f.toString();
+            }
         }
-
-        return null;
     }
 
     public String findFile(File[] fA) {
@@ -190,40 +171,31 @@ public class CFRDecompiler extends Decompiler {
                 "--outputdir",
                 outputPath,
                 "--decodeenumswitch",
-                String.valueOf(BytecodeViewer.viewer.decodeenumswitch
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.decodeenumswitch.isSelected()),
                 "--sugarenums",
                 String.valueOf(BytecodeViewer.viewer.sugarenums.isSelected()),
                 "--decodestringswitch",
-                String.valueOf(BytecodeViewer.viewer.decodestringswitch
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.decodestringswitch.isSelected()),
                 "--arrayiter",
                 String.valueOf(BytecodeViewer.viewer.arrayiter.isSelected()),
                 "--collectioniter",
-                String.valueOf(BytecodeViewer.viewer.collectioniter
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.collectioniter.isSelected()),
                 "--innerclasses",
                 String.valueOf(BytecodeViewer.viewer.innerclasses.isSelected()),
                 "--removeboilerplate",
-                String.valueOf(BytecodeViewer.viewer.removeboilerplate
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.removeboilerplate.isSelected()),
                 "--removeinnerclasssynthetics",
-                String.valueOf(BytecodeViewer.viewer.removeinnerclasssynthetics
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.removeinnerclasssynthetics.isSelected()),
                 "--decodelambdas",
                 String.valueOf(BytecodeViewer.viewer.decodelambdas.isSelected()),
                 "--hidebridgemethods",
-                String.valueOf(BytecodeViewer.viewer.hidebridgemethods
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.hidebridgemethods.isSelected()),
                 "--liftconstructorinit",
-                String.valueOf(BytecodeViewer.viewer.liftconstructorinit
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.liftconstructorinit.isSelected()),
                 "--removedeadmethods",
-                String.valueOf(BytecodeViewer.viewer.removedeadmethods
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.removedeadmethods.isSelected()),
                 "--removebadgenerics",
-                String.valueOf(BytecodeViewer.viewer.removebadgenerics
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.removebadgenerics.isSelected()),
                 "--sugarasserts",
                 String.valueOf(BytecodeViewer.viewer.sugarasserts.isSelected()),
                 "--sugarboxing",
@@ -243,8 +215,7 @@ public class CFRDecompiler extends Decompiler {
                 "--forcetopsort",
                 String.valueOf(BytecodeViewer.viewer.forcetopsort.isSelected()),
                 "--forcetopsortaggress",
-                String.valueOf(BytecodeViewer.viewer.forcetopsortaggress
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.forcetopsortaggress.isSelected()),
                 "--stringbuffer",
                 String.valueOf(BytecodeViewer.viewer.stringbuffer.isSelected()),
                 "--stringbuilder",
@@ -258,55 +229,44 @@ public class CFRDecompiler extends Decompiler {
                 "--override",
                 String.valueOf(BytecodeViewer.viewer.override.isSelected()),
                 "--showinferrable",
-                String.valueOf(BytecodeViewer.viewer.showinferrable
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.showinferrable.isSelected()),
                 "--aexagg",
                 String.valueOf(BytecodeViewer.viewer.aexagg.isSelected()),
                 "--forcecondpropagate",
-                String.valueOf(BytecodeViewer.viewer.forcecondpropagate
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.forcecondpropagate.isSelected()),
                 "--hideutf",
                 String.valueOf(BytecodeViewer.viewer.hideutf.isSelected()),
                 "--hidelongstrings",
-                String.valueOf(BytecodeViewer.viewer.hidelongstrings
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.hidelongstrings.isSelected()),
                 "--commentmonitors",
-                String.valueOf(BytecodeViewer.viewer.commentmonitor
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.commentmonitor.isSelected()),
                 "--allowcorrecting",
-                String.valueOf(BytecodeViewer.viewer.allowcorrecting
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.allowcorrecting.isSelected()),
                 "--labelledblocks",
-                String.valueOf(BytecodeViewer.viewer.labelledblocks
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.labelledblocks.isSelected()),
                 "--j14classobj",
                 String.valueOf(BytecodeViewer.viewer.j14classobj.isSelected()),
                 "--hidelangimports",
-                String.valueOf(BytecodeViewer.viewer.hidelangimports
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.hidelangimports.isSelected()),
                 "--recovertypeclash",
-                String.valueOf(BytecodeViewer.viewer.recoverytypeclash
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.recoverytypeclash.isSelected()),
                 "--recovertypehints",
-                String.valueOf(BytecodeViewer.viewer.recoverytypehints
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.recoverytypehints.isSelected()),
                 "--forcereturningifs",
-                String.valueOf(BytecodeViewer.viewer.forceturningifs
-                        .isSelected()),
+                String.valueOf(BytecodeViewer.viewer.forceturningifs.isSelected()),
                 "--forloopaggcapture",
-                String.valueOf(BytecodeViewer.viewer.forloopaggcapture
-                        .isSelected()),};
+                String.valueOf(BytecodeViewer.viewer.forloopaggcapture.isSelected()),
+                };
     }
 
     byte[] buffer = new byte[1024];
 
     @Override
-    public void decompileToZip(String sourceJar, String zipName)
-    {
+    public void decompileToZip(String sourceJar, String zipName) {
         File tempZip = new File(sourceJar);
 
         String fileStart = BytecodeViewer.tempDirectory + BytecodeViewer.fs;
-        String fuckery = fuckery(fileStart);
+        String fuckery = getOutputPath(fileStart);
 
         org.benf.cfr.reader.Main.main(generateMainMethod(tempZip.getAbsolutePath(), fuckery));
 
@@ -352,8 +312,7 @@ public class CFRDecompiler extends Decompiler {
         }
     }
 
-    private static void copy(InputStream in, OutputStream out)
-            throws IOException {
+    private static void copy(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         while (true) {
             int readCount = in.read(buffer);

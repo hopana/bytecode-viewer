@@ -48,6 +48,8 @@ import java.util.Map.Entry;
 @SuppressWarnings("serial")
 public class FileNavigationPane extends VisibleComponent implements FileDrop.Listener {
 
+    private Font defaultFont = new Font("Microsoft YaHei", Font.PLAIN, 12);
+
     FileChangeNotifier fcn;
     JCheckBox exact = new JCheckBox("Exact");
     JButton open = new JButton("+");
@@ -167,29 +169,24 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
     public FileNavigationPane(final FileChangeNotifier fcn) {
         super("ClassNavigation");
         this.fcn = fcn;
-        tree.setFont(new Font("Microsoft YaHei,", Font.PLAIN, 12));
+        tree.setFont(defaultFont);
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
-        quickSearch.setFont(new Font("Microsoft YaHei,", Font.PLAIN, 12));
+        quickSearch.setFont(defaultFont);
         quickSearch.setForeground(Color.gray);
+        exact.setFont(defaultFont);
         setTitle("Files");
 
-        this.open.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final TreeNode root = (TreeNode) tree.getModel().getRoot();
-                expandAll(tree, new TreePath(root), true);
-            }
+        this.open.addActionListener(e -> {
+            final TreeNode root = (TreeNode) tree.getModel().getRoot();
+            expandAll(tree, new TreePath(root), true);
         });
 
-        this.close.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final TreeNode root = (TreeNode) tree.getModel().getRoot();
-                final TreePath path = new TreePath(root);
-                expandAll(tree, path, false);
-                tree.expandPath(path);
-            }
+        this.close.addActionListener(e -> {
+            final TreeNode root = (TreeNode) tree.getModel().getRoot();
+            final TreePath path = new TreePath(root);
+            expandAll(tree, path, false);
+            tree.expandPath(path);
         });
 
         this.tree.addMouseListener(new MouseAdapter() {
@@ -199,15 +196,12 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
             }
         });
 
-        this.tree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(final TreeSelectionEvent arg0) {
-                if (cancel) {
-                    cancel = false;
-                    return;
-                }
-                openPath(arg0.getPath());
+        this.tree.addTreeSelectionListener(event -> {
+            if (cancel) {
+                cancel = false;
+                return;
             }
+            openPath(event.getPath());
         });
 
         this.tree.addKeyListener(new KeyListener() {
@@ -404,19 +398,22 @@ public class FileNavigationPane extends VisibleComponent implements FileDrop.Lis
         StringMetrics m = null;
 
         @Override
-        public void paint(final Graphics g) {
+        public void paint(final Graphics graphics) {
+            Graphics2D graphics2D = (Graphics2D) graphics;
+
             try {
-                super.paint(g);
+                super.paint(graphics2D);
                 if (m == null) {
-                    m = new StringMetrics((Graphics2D) g);
+                    m = new StringMetrics(graphics2D);
                 }
                 if (treeRoot.getChildCount() < 1) {
-                    g.setColor(new Color(0, 0, 0, 100));
-                    g.fillRect(0, 0, getWidth(), getHeight());
-                    g.setColor(Color.white);
-                    g.setFont(new Font("Microsoft YaHei,", Font.PLAIN, 10));
+                    graphics2D.setColor(new Color(0, 0, 0, 100));
+                    graphics2D.fillRect(0, 0, getWidth(), getHeight());
+                    graphics2D.setColor(Color.white);
+                    graphics2D.setFont(defaultFont);
+                    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                     String s = "Drag class/jar/zip/APK/DEX here";
-                    g.drawString(s, ((int) ((getWidth() / 2) - (m.getWidth(s) / 2))), getHeight() / 2);
+                    graphics2D.drawString(s, ((int) ((getWidth() / 2) - (m.getWidth(s) / 2))), getHeight() / 2);
                 }
             } catch (java.lang.InternalError | java.lang.NullPointerException e) {
 

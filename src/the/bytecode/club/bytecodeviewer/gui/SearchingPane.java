@@ -1,7 +1,6 @@
 package the.bytecode.club.bytecodeviewer.gui;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -60,6 +59,8 @@ public class SearchingPane extends VisibleComponent
 
     private static final long serialVersionUID = -1098524689236993932L;
 
+    private Font defaultFont = new Font("Microsoft YaHei", Font.PLAIN, 12);
+
     FileChangeNotifier fcn;
 
     JCheckBox exact = new JCheckBox("Exact");
@@ -87,14 +88,16 @@ public class SearchingPane extends VisibleComponent
         super("Search");
 
         this.fcn = fcn;
-
         final JPanel optionPanel = new JPanel(new BorderLayout());
-
         final JPanel searchRadiusOpt = new JPanel(new BorderLayout());
-
         final JPanel searchOpts = new JPanel(new GridLayout(2, 1));
 
-        searchRadiusOpt.add(new JLabel("Search from "), BorderLayout.WEST);
+        exact.setFont(defaultFont);
+
+        JLabel searchFromLabel = new JLabel("Search from ");
+        searchFromLabel.setFont(defaultFont);
+        searchRadiusOpt.setFont(defaultFont);
+        searchRadiusOpt.add(searchFromLabel, BorderLayout.WEST);
 
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         for (final SearchRadius st : SearchRadius.values())
@@ -103,9 +106,11 @@ public class SearchingPane extends VisibleComponent
         }
 
         searchRadiusBox = new JComboBox(model);
+        searchRadiusBox.setFont(new Font("Microsoft YaHei", Font.PLAIN, 11));
 
         searchRadiusOpt.add(searchRadiusBox, BorderLayout.CENTER);
 
+        searchOpts.setFont(defaultFont);
         searchOpts.add(searchRadiusOpt);
 
         model = new DefaultComboBoxModel();
@@ -115,6 +120,7 @@ public class SearchingPane extends VisibleComponent
         }
 
         typeBox = new JComboBox(model);
+        typeBox.setFont(new Font("Microsoft YaHei", Font.PLAIN, 11));
         final JPanel searchOptPanel = new JPanel();
 
         final ItemListener il = new ItemListener()
@@ -147,6 +153,7 @@ public class SearchingPane extends VisibleComponent
 
         optionPanel.add(p2, BorderLayout.CENTER);
 
+        search.setFont(defaultFont);
         search.addActionListener(new ActionListener()
         {
             @Override
@@ -159,6 +166,7 @@ public class SearchingPane extends VisibleComponent
         optionPanel.add(search, BorderLayout.SOUTH);
 
         this.tree = new JTree(treeRoot);
+        tree.setFont(defaultFont);
 
         getContentPane().setLayout(new BorderLayout());
 

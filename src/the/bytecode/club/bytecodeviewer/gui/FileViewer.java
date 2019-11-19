@@ -11,8 +11,8 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -207,10 +207,10 @@ public class FileViewer extends Viewer {
         panel2.add(scrollPane);
     }
 
-    static CharsetEncoder asciiEncoder = Charset.forName("US-ASCII").newEncoder(); // or "ISO-8859-1" for ISO Latin 1
+    static CharsetEncoder utf8Encoder = StandardCharsets.UTF_8.newEncoder(); // or "ISO-8859-1" for ISO Latin 1
 
     public static boolean isPureAscii(String v) {
-        return asciiEncoder.canEncode(v);
+        return utf8Encoder.canEncode(v);
     }
 
     public FileViewer(final FileContainer container, final String name, final byte[] contents) {

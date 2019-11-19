@@ -1,41 +1,25 @@
 package the.bytecode.club.bytecodeviewer.decompilers;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.zip.ZipException;
-import java.util.zip.ZipOutputStream;
-
-import org.objectweb.asm.tree.ClassNode;
-
+import com.strobel.assembler.InputTypeLoader;
+import com.strobel.assembler.metadata.*;
 import com.strobel.core.StringUtilities;
 import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 import com.strobel.decompiler.languages.java.JavaFormattingOptions;
-import com.strobel.assembler.InputTypeLoader;
-import com.strobel.assembler.metadata.Buffer;
-import com.strobel.assembler.metadata.ITypeLoader;
-import com.strobel.assembler.metadata.JarTypeLoader;
-import com.strobel.assembler.metadata.MetadataSystem;
-import com.strobel.assembler.metadata.TypeDefinition;
-import com.strobel.assembler.metadata.TypeReference;
-
+import org.apache.commons.io.Charsets;
+import org.objectweb.asm.tree.ClassNode;
 import the.bytecode.club.bytecodeviewer.BytecodeViewer;
+import the.bytecode.club.bytecodeviewer.util.EncodeUtils;
 import the.bytecode.club.bytecodeviewer.util.MiscUtils;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.zip.ZipException;
+import java.util.zip.ZipOutputStream;
 
 /***************************************************************************
  * Bytecode Viewer (BCV) - Java & Android Reverse Engineering Suite        *
@@ -66,35 +50,22 @@ public class ProcyonDecompiler extends Decompiler {
 
     public DecompilerSettings getDecompilerSettings() {
         DecompilerSettings settings = new DecompilerSettings();
-        settings.setAlwaysGenerateExceptionVariableForCatchBlocks(BytecodeViewer.viewer.chckbxmntmNewCheckItem_6
-                .isSelected());
-        settings.setExcludeNestedTypes(BytecodeViewer.viewer.chckbxmntmNewCheckItem_11
-                .isSelected());
-        settings.setShowDebugLineNumbers(BytecodeViewer.viewer.chckbxmntmShowDebugLine
-                .isSelected());
-        settings.setIncludeLineNumbersInBytecode(BytecodeViewer.viewer.chckbxmntmNewCheckItem_3
-                .isSelected());
-        settings.setIncludeErrorDiagnostics(BytecodeViewer.viewer.chckbxmntmNewCheckItem_4
-                .isSelected());
-        settings.setShowSyntheticMembers(BytecodeViewer.viewer.chckbxmntmNewCheckItem_7
-                .isSelected());
-        settings.setSimplifyMemberReferences(BytecodeViewer.viewer.chckbxmntmSimplifyMemberReferences
-                .isSelected());
-        settings.setMergeVariables(BytecodeViewer.viewer.mnMergeVariables
-                .isSelected());
-        settings.setForceExplicitTypeArguments(BytecodeViewer.viewer.chckbxmntmNewCheckItem_8
-                .isSelected());
-        settings.setForceExplicitImports(BytecodeViewer.viewer.chckbxmntmNewCheckItem_9
-                .isSelected());
-        settings.setFlattenSwitchBlocks(BytecodeViewer.viewer.chckbxmntmNewCheckItem_10
-                .isSelected());
-        settings.setRetainPointlessSwitches(BytecodeViewer.viewer.chckbxmntmNewCheckItem_2
-                .isSelected());
-        settings.setRetainRedundantCasts(BytecodeViewer.viewer.chckbxmntmNewCheckItem_5
-                .isSelected());
-        settings.setUnicodeOutputEnabled(BytecodeViewer.viewer.chckbxmntmNewCheckItem_1
-                .isSelected());
+        settings.setAlwaysGenerateExceptionVariableForCatchBlocks(BytecodeViewer.viewer.chckbxmntmNewCheckItem_6.isSelected());
+        settings.setExcludeNestedTypes(BytecodeViewer.viewer.chckbxmntmNewCheckItem_11.isSelected());
+        settings.setShowDebugLineNumbers(BytecodeViewer.viewer.chckbxmntmShowDebugLine.isSelected());
+        settings.setIncludeLineNumbersInBytecode(BytecodeViewer.viewer.chckbxmntmNewCheckItem_3.isSelected());
+        settings.setIncludeErrorDiagnostics(BytecodeViewer.viewer.chckbxmntmNewCheckItem_4.isSelected());
+        settings.setShowSyntheticMembers(BytecodeViewer.viewer.chckbxmntmNewCheckItem_7.isSelected());
+        settings.setSimplifyMemberReferences(BytecodeViewer.viewer.chckbxmntmSimplifyMemberReferences.isSelected());
+        settings.setMergeVariables(BytecodeViewer.viewer.mnMergeVariables.isSelected());
+        settings.setForceExplicitTypeArguments(BytecodeViewer.viewer.chckbxmntmNewCheckItem_8.isSelected());
+        settings.setForceExplicitImports(BytecodeViewer.viewer.chckbxmntmNewCheckItem_9.isSelected());
+        settings.setFlattenSwitchBlocks(BytecodeViewer.viewer.chckbxmntmNewCheckItem_10.isSelected());
+        settings.setRetainPointlessSwitches(BytecodeViewer.viewer.chckbxmntmNewCheckItem_2.isSelected());
+        settings.setRetainRedundantCasts(BytecodeViewer.viewer.chckbxmntmNewCheckItem_5.isSelected());
+        settings.setUnicodeOutputEnabled(BytecodeViewer.viewer.chckbxmntmNewCheckItem_1.isSelected());
         settings.setJavaFormattingOptions(JavaFormattingOptions.createDefault());
+
         return settings;
     }
 
@@ -102,8 +73,7 @@ public class ProcyonDecompiler extends Decompiler {
     public String decompileClassNode(ClassNode cn, byte[] b) {
         String exception = "";
         try {
-            String fileStart = BytecodeViewer.tempDirectory + BytecodeViewer.fs
-                    + "temp";
+            String fileStart = BytecodeViewer.tempDirectory + BytecodeViewer.fs + "temp";
 
             final File tempClass = new File(MiscUtils.getUniqueName(fileStart, ".class") + ".class");
 
@@ -121,8 +91,7 @@ public class ProcyonDecompiler extends Decompiler {
 
             LuytenTypeLoader typeLoader = new LuytenTypeLoader();
             MetadataSystem metadataSystem = new MetadataSystem(typeLoader);
-            TypeReference type = metadataSystem.lookupType(tempClass
-                    .getCanonicalPath());
+            TypeReference type = metadataSystem.lookupType(tempClass.getCanonicalPath());
 
             DecompilationOptions decompilationOptions = new DecompilationOptions();
             decompilationOptions.setSettings(settings);
@@ -134,9 +103,8 @@ public class ProcyonDecompiler extends Decompiler {
             }
             StringWriter stringwriter = new StringWriter();
             settings.getLanguage().decompileType(resolvedType, new PlainTextOutput(stringwriter), decompilationOptions);
-            String decompiledSource = stringwriter.toString();
 
-            return decompiledSource;
+            return EncodeUtils.unicodeToString(stringwriter.toString());
         } catch (StackOverflowError | Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -159,12 +127,8 @@ public class ProcyonDecompiler extends Decompiler {
     /**
      * @author DeathMarine
      */
-    private void doSaveJarDecompiled(File inFile, File outFile)
-            throws Exception {
-        try (JarFile jfile = new JarFile(inFile);
-             FileOutputStream dest = new FileOutputStream(outFile);
-             BufferedOutputStream buffDest = new BufferedOutputStream(dest);
-             ZipOutputStream out = new ZipOutputStream(buffDest);) {
+    private void doSaveJarDecompiled(File inFile, File outFile) throws Exception {
+        try (JarFile jfile = new JarFile(inFile); FileOutputStream dest = new FileOutputStream(outFile); BufferedOutputStream buffDest = new BufferedOutputStream(dest); ZipOutputStream out = new ZipOutputStream(buffDest);) {
             byte data[] = new byte[1024];
             DecompilerSettings settings = getDecompilerSettings();
             LuytenTypeLoader typeLoader = new LuytenTypeLoader();
@@ -181,24 +145,18 @@ public class ProcyonDecompiler extends Decompiler {
             while (ent.hasMoreElements()) {
                 JarEntry entry = ent.nextElement();
                 if (entry.getName().endsWith(".class")) {
-                    JarEntry etn = new JarEntry(entry.getName().replace(
-                            ".class", ".java"));
+                    JarEntry etn = new JarEntry(entry.getName().replace(".class", ".java"));
                     if (history.add(etn)) {
                         out.putNextEntry(etn);
                         try {
-                            String internalName = StringUtilities.removeRight(
-                                    entry.getName(), ".class");
-                            TypeReference type = metadataSystem
-                                    .lookupType(internalName);
+                            String internalName = StringUtilities.removeRight(entry.getName(), ".class");
+                            TypeReference type = metadataSystem.lookupType(internalName);
                             TypeDefinition resolvedType = null;
-                            if ((type == null)
-                                    || ((resolvedType = type.resolve()) == null)) {
+                            if ((type == null) || ((resolvedType = type.resolve()) == null)) {
                                 throw new Exception("Unable to resolve type.");
                             }
                             Writer writer = new OutputStreamWriter(out);
-                            settings.getLanguage().decompileType(resolvedType,
-                                    new PlainTextOutput(writer),
-                                    decompilationOptions);
+                            settings.getLanguage().decompileType(resolvedType, new PlainTextOutput(writer), decompilationOptions);
                             writer.flush();
                         } finally {
                             out.closeEntry();
@@ -254,8 +212,7 @@ public class ProcyonDecompiler extends Decompiler {
         }
 
         @Override
-        public boolean tryLoadType(final String internalName,
-                                   final Buffer buffer) {
+        public boolean tryLoadType(final String internalName, final Buffer buffer) {
             for (final ITypeLoader typeLoader : _typeLoaders) {
                 if (typeLoader.tryLoadType(internalName, buffer)) {
                     return true;

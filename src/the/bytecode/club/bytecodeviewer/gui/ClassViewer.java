@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static the.bytecode.club.bytecodeviewer.util.MethodParser.Method;
 
@@ -53,6 +54,9 @@ import static the.bytecode.club.bytecodeviewer.util.MethodParser.Method;
 
 public class ClassViewer extends Viewer {
     private static final long serialVersionUID = -8650495368920680024L;
+
+    private Font defaultFont = new Font("Microsoft YaHei", Font.PLAIN, 12);
+
     ArrayList<MethodData> lnData = new ArrayList<MethodData>();
     String name;
     JSplitPane sp;
@@ -82,8 +86,6 @@ public class ClassViewer extends Viewer {
     public RSyntaxTextArea java3 = null;
     public File[] tempFiles;
     public ClassViewer THIS = this;
-
-    private final Font microsoftYaHei = new Font("Microsoft YaHei,", Font.PLAIN, 12);
 
     /**
      * This was really interesting to write.
@@ -235,6 +237,9 @@ public class ClassViewer extends Viewer {
 
     public ClassViewer(final FileContainer container, final String name, final ClassNode cn) {
         this.container = container;
+        check1.setFont(defaultFont);
+        check2.setFont(defaultFont);
+        check3.setFont(defaultFont);
         JButton byteSearchNext = new JButton();
         JButton byteSearchPrev = new JButton();
         JPanel byteButtonPane = new JPanel(new BorderLayout());
@@ -481,9 +486,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel procyonLabel = new JLabel("Procyon Decompiler - Editable: " + panelArea.isEditable());
-                        procyonLabel.setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
+                        procyonLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(procyonLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -522,9 +527,9 @@ public class ClassViewer extends Viewer {
                         });
 
                         JLabel cfrLabel = new JLabel("CFR Decompiler - Editable: " + panelArea.isEditable());
-                        cfrLabel.setFont(microsoftYaHei);
+                        cfrLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(cfrLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -562,9 +567,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel fernLabel = new JLabel("FernFlower Decompiler - Editable: " + panelArea.isEditable());
-                        fernLabel.setFont(microsoftYaHei);
+                        fernLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(fernLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -602,9 +607,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel decompilerLabel = new JLabel("Bytecode Decompiler - Editable: " + panelArea.isEditable());
-                        decompilerLabel.setFont(microsoftYaHei);
+                        decompilerLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(decompilerLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -617,7 +622,7 @@ public class ClassViewer extends Viewer {
                         final ClassWriter cw = new ClassWriter(0);
                         cn.accept(cw);
                         final JHexEditor hex = new JHexEditor(cw.toByteArray());
-                        hex.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        hex.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -654,9 +659,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel smali = new JLabel("Smali Decompiler - Editable: " + panelArea.isEditable());
-                        smali.setFont(microsoftYaHei);
+                        smali.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(smali);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -692,9 +697,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel krakatauDecompilerLabel = new JLabel("Krakatau Decompiler - Editable: " + panelArea.isEditable());
-                        krakatauDecompilerLabel.setFont(microsoftYaHei);
+                        krakatauDecompilerLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(krakatauDecompilerLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -734,9 +739,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel krakatauDisassemblerLaber = new JLabel("Krakatau Disassembler - Editable: " + panelArea.isEditable());
-                        krakatauDisassemblerLaber.setFont(microsoftYaHei);
+                        krakatauDisassemblerLaber.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(krakatauDisassemblerLaber);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -772,9 +777,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel jdguiLabel = new JLabel("JD-GUI Decompiler - Editable: " + panelArea.isEditable());
-                        jdguiLabel.setFont(microsoftYaHei);
+                        jdguiLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(jdguiLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -812,9 +817,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel jadxLabel = new JLabel("JADX Decompiler - Editable: " + panelArea.isEditable());
-                        jadxLabel.setFont(microsoftYaHei);
+                        jadxLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(jadxLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -874,9 +879,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel procyonLabel = new JLabel("Procyon Decompiler - Editable: " + panelArea.isEditable());
-                        procyonLabel.setFont(microsoftYaHei);
+                        procyonLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(procyonLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -914,9 +919,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel cfrLabel = new JLabel("CFR Decompiler - Editable: " + panelArea.isEditable());
-                        cfrLabel.setFont(microsoftYaHei);
+                        cfrLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(cfrLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -954,9 +959,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel fernLabel = new JLabel("FernFlower Decompiler - Editable: " + panelArea.isEditable());
-                        fernLabel.setFont(microsoftYaHei);
+                        fernLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(fernLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -994,9 +999,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel bytecodeLabel = new JLabel("Bytecode Decompiler - Editable: " + panelArea.isEditable());
-                        bytecodeLabel.setFont(microsoftYaHei);
+                        bytecodeLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(bytecodeLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1010,7 +1015,7 @@ public class ClassViewer extends Viewer {
                         final ClassWriter cw = new ClassWriter(0);
                         cn.accept(cw);
                         final JHexEditor hex = new JHexEditor(cw.toByteArray());
-                        hex.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        hex.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1047,9 +1052,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel smaliLabel = new JLabel("Smali Decompiler - Editable: " + panelArea.isEditable());
-                        smaliLabel.setFont(microsoftYaHei);
+                        smaliLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(smaliLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1086,9 +1091,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel krakatauDecompilerLabel = new JLabel("Krakatau Decompiler - Editable: " + panelArea.isEditable());
-                        krakatauDecompilerLabel.setFont(microsoftYaHei);
+                        krakatauDecompilerLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(krakatauDecompilerLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1127,9 +1132,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel krakatauDisassemblerLabel = new JLabel("Krakatau Disassembler");
-                        krakatauDisassemblerLabel.setFont(microsoftYaHei);
+                        krakatauDisassemblerLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(krakatauDisassemblerLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1166,9 +1171,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel jdguiLabel = new JLabel("JD-GUI Decompiler - Editable: " + panelArea.isEditable());
-                        jdguiLabel.setFont(microsoftYaHei);
+                        jdguiLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(jdguiLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1206,9 +1211,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel jadxLabel = new JLabel("JADX Decompiler - Editable: " + panelArea.isEditable());
-                        jadxLabel.setFont(microsoftYaHei);
+                        jadxLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(jadxLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1268,9 +1273,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel procyonLabel = new JLabel("Procyon Decompiler - Editable: " + panelArea.isEditable());
-                        procyonLabel.setFont(microsoftYaHei);
+                        procyonLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(procyonLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1308,9 +1313,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel cfrDecompilerLabel = new JLabel("CFR Decompiler - Editable: " + panelArea.isEditable());
-                        cfrDecompilerLabel.setFont(microsoftYaHei);
+                        cfrDecompilerLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(cfrDecompilerLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1348,9 +1353,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel fernLabel = new JLabel("FernFlower Decompiler - Editable: " + panelArea.isEditable());
-                        fernLabel.setFont(microsoftYaHei);
+                        fernLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(fernLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1388,9 +1393,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel bytecodeLabel = new JLabel("Bytecode Decompiler - Editable: " + panelArea.isEditable());
-                        bytecodeLabel.setFont(microsoftYaHei);
+                        bytecodeLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(bytecodeLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1403,7 +1408,7 @@ public class ClassViewer extends Viewer {
                         final ClassWriter cw = new ClassWriter(0);
                         cn.accept(cw);
                         final JHexEditor hex = new JHexEditor(cw.toByteArray());
-                        hex.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        hex.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1441,9 +1446,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel smaliLabel = new JLabel("Smali Decompiler - Editable: " + panelArea.isEditable());
-                        smaliLabel.setFont(microsoftYaHei);
+                        smaliLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(smaliLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1480,10 +1485,10 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel krakatauDecompilerLabel = new JLabel("Krakatau Decompiler - Editable: " + panelArea.isEditable());
-                        krakatauDecompilerLabel.setFont(microsoftYaHei);
+                        krakatauDecompilerLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(krakatauDecompilerLabel);
                         java3 = panelArea;
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1520,9 +1525,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel krakatauDisassemblerLabel = new JLabel("Krakatau Disassembler");
-                        krakatauDisassemblerLabel.setFont(microsoftYaHei);
+                        krakatauDisassemblerLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(krakatauDisassemblerLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1559,10 +1564,10 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel jdguiLabel = new JLabel("JD-GUI Decompiler - Editable: " + panelArea.isEditable());
-                        jdguiLabel.setFont(microsoftYaHei);
+                        jdguiLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(jdguiLabel);
                         java3 = panelArea;
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
@@ -1598,9 +1603,9 @@ public class ClassViewer extends Viewer {
                             }
                         });
                         JLabel jadxLabel = new JLabel("JADX Decompiler - Editable: " + panelArea.isEditable());
-                        jadxLabel.setFont(microsoftYaHei);
+                        jadxLabel.setFont(defaultFont);
                         scrollPane.setColumnHeaderView(jadxLabel);
-                        panelArea.setFont(new Font("Consolas", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
+                        panelArea.setFont(new Font("Consolas,Microsoft YaHei", Font.PLAIN, (int) BytecodeViewer.viewer.fontSpinner.getValue()));
 
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {

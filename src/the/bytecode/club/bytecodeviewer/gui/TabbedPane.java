@@ -93,6 +93,7 @@ public class TabbedPane extends JPanel {
             }
         };
 
+        label.setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
         this.add(label);
         // add more space between the label and the button
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
